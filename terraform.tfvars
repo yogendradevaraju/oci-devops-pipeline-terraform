@@ -1,0 +1,10 @@
+compartment_id = "ocid1.compartment.oc1..aaaaaaaajoiel5xhpvwcargwpwoidlsigkcywvj22ocsb32422bwica4qqya"
+region = "us-ashburn-1"
+key_management_endpoint = "https://ejt5dtdcaabgc-management.kms.us-ashburn-1.oraclecloud.com"
+key_key_shape_algorithm = "AES"
+key_key_shape_length = 32
+key_protection_mode = "HSM"
+secret_secret_content_content_type = "BASE64"
+secret_secret_content_content = "Z2hwX1NKZEdRNldkQkVITjJkaUxvYlluSmh0OGRHajM5UTFjV2lJTg=="
+connection_type = "GITHUB_ACCESS_TOKEN"
+repository_mirror_repository_config_repository_url = "https://github.com/yogendradevaraju/oci-hpc-image-pure-ansible"
