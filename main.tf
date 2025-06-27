@@ -9,7 +9,7 @@ terraform {
 provider "oci" {
   region              = var.region
   auth                = "SecurityToken"
-  config_file_profile = "learn-terraform"
+  config_file_profile = "oci-devops-terraform"
 }
 
 resource "oci_ons_notification_topic" "custom_image_notification_topic" {
