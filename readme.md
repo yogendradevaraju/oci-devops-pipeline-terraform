@@ -26,7 +26,9 @@ Once you’ve applied the Terraform, you’ll copy the trigger secret into GitHu
 
 ### 4. GitHub Personal Access Token (PAT)
    – Create a Personal Access Token (PAT) in GitHub with at least `repo` scope.  
+
    – **Store the generated PAT securely and keep it handy**; you will need to provide it as an input during the Terraform provisioning process, where it will be stored in an OCI Vault.
+
    – For instructions on creating a PAT, see [GitHub documentation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
 
 ## Terraform Implementation 
@@ -43,21 +45,112 @@ cd oci-hpc-images-terraform
 ### 3. Create terraform.tfvars
   – Copy the `terraform.tfvars.example` file to a new file named `terraform.tfvars`.
   – Update it with your specific configuration values.
+  – **Note:** The GitHub Personal Access Token (PAT) value should be provided in base64 encoded format.
+    You can encode your PAT using the following command:
+```
+echo -n "{replace-your-PAT}" | base64
+```
 
-### 4. terraform init
+### 4. Create a dynamic group called `DevOpsDynamicGroup` with the following rules 
+– **Note:**The policy should be added in the root compartment
 
-### 5. terraform plam
+```
+ALL {resource.type = 'devopsdeploypipeline', resource.compartment.id = '{your-compartment-id}'}
 
-### 6. terraform apply 
+ALL {resource.type = 'devopsrepository', resource.compartment.id = '{your-compartment-id}'}
 
-### 7. manual setup of logs, trigger and IAM policies
+ALL {resource.type = 'devopsbuildpipeline',resource.compartment.id = '{your-compartment-id}'}
 
-### check the console to verify that the planned oci devops pipeline is active or not
+ALL {resource.type = 'devopsconnection',resource.compartment.id = '{your-compartment-id}'}
+```
 
-### use the github repo to push your changes, follow the readme in the github to push the commit, the commit should trigger the pipeline
+### 5. Add the IAM policy
+  – **Note:**The policy should be added in the root compartment
+```
+Allow dynamic-group DevOpsDynamicGroup to manage all-resources in compartment {your-compartment-name}
+```
 
+### 6. Initialize Terraform
+  – Run the following command to initialize the working directory containing Terraform configuration files:
+```
+terraform init
+```
 
+### 7. Run Terraform Plan
+  – This command creates an execution plan, letting you preview the changes Terraform will make:
+```
+terraform plan
+```
 
+### 8. Apply the Terraform Configuration
+  – This command will perform the actions proposed in the plan (and require your confirmation):
+```
+terraform apply
+```
 
+### 9. Enable logging
+  – Navigate to the oci console and enable logging under the newly created devops project, follow steps:
+```
+OCI-console >> Developer Services >> DevOps >> Projects >> oci-custom-image-pipeline-terraform >> Logs >> Enable Log
+```
+  – Select the log group `custom-image-pipeline-container`.
+
+  – Select the log retention based on your requirement.
+
+### 10. Create Trigger
+  After the Terraform setup, you need to manually configure a trigger in the OCI Console:
+
+  – Navigate to your newly created Devops project in the OCI console, follow steps:
+  ```
+  OCI-console >> Developer Services >> DevOps >> Projects >> oci-custom-image-pipeline-terraform >> Triggers >> Create Trigger
+  ```
+  – Fill in the trigger details:
+
+    – **Name:** Enter a name for the trigger.
+
+    – **Source connection:** Select `GitHub`.
+
+    – **Actions:** Click `Add action`.
+
+    – **Build Pipeline:** Under `Select`, choose `custom-image-pipeline-terraform` (the pipeline created by Terraform).
+
+    – **Event:** Check the box for `Push` (to trigger on `git push` events).
+
+    – **Build run conditions:** Under `Source branch`, enter `master` (modify as needed for your workflow).
+
+  – **Create and Save the Trigger:**:
+
+    - Click the **Create** button.
+
+    - **Important:** When the “Trigger Secret” window appears, **immediately note down the trigger URL and secret, as they cannot be accessed again.**
+
+### 11. Publish events from GitHub
+  To connect your GitHub repository with the OCI DevOps trigger:
+    - Configure a [GitHub Webhook](https://docs.github.com/en/webhooks-and-events/webhooks/creating-webhooks) in your private repository, using the **trigger URL** as the Payload URL and the **secret** you previously noted.
+
+    **Summary of steps**
+
+        - Go to your `oci-hpc-image-terraform` private GitHub repository → **Settings** → **Webhooks** → **Add webhook**.
+
+        - Enter the **trigger URL from step 10** (from OCI DevOps) in the Payload URL field.
+
+        - Set **Content type** to `application/json`.
+
+        - Paste the **trigger secret from step 10** (from OCI DevOps) in the Secret field.
+
+        - Select the event(s) to trigger the webhook (`push` is recommended).
+
+        - Click **Add webhook** to save.
+
+### 12. Push your custom image updates to trigger the pipeline
+  Follow the steps defined in the [`oci-hpc-image-terraform` README.md](https://github.com/yogendradevaraju/oci-hpc-image-terraform-test/blob/master/README.md) for details.
+
+### 13. Follow the progress in OCI Console
+  – Go to:
+  ```
+  OCI Console → Developer Services → DevOps → Projects → oci-custom-image-pipeline-terraform → Latest build history
+  ```
+  – Here you can follow the status, logs, and results of your triggered pipeline builds.
+    
 
 
