@@ -5,14 +5,9 @@ variable "compartment_id" {
 variable "region" {
   description = "region where you have OCI tenancy"
   type        = string
-  default     = "us-ashburn-1"
 }
 variable "connection_type" {
   description = "The type of connection to create (e.g. GITHUB, BITBUCKET)"
-  type        = string
-}
-variable "key_management_endpoint" {
-  description = "The endpoint to manage operations"
   type        = string
 }
 variable "key_key_shape_algorithm" {

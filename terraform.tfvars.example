@@ -1,0 +1,9 @@
+compartment_id = "replace_with_your_compartment_ocid"
+region = "replace_with_your_region"
+key_key_shape_algorithm = "AES"
+key_key_shape_length = 32
+key_protection_mode = "HSM"
+secret_secret_content_content_type = "BASE64"
+secret_secret_content_content = "replace_with_BASE64_encoded_github_pat"
+connection_type = "GITHUB_ACCESS_TOKEN"
+repository_mirror_repository_config_repository_url = "replace_with_your_private_ansible_repo_url"

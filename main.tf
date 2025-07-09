@@ -9,7 +9,7 @@ terraform {
 provider "oci" {
   region              = var.region
   auth                = "SecurityToken"
-  config_file_profile = "learn-terraform"
+  config_file_profile = "oci-devops-terraform"
 }
 
 resource "oci_ons_notification_topic" "custom_image_notification_topic" {
@@ -124,40 +124,7 @@ resource "oci_devops_build_pipeline_stage" "custom_build_stage" {
   image = "OL7_X86_64_STANDARD_10"
 }
 
-resource "oci_devops_trigger" "custom_image_pipeline_terraform_trigger" {
-    #Required
-    actions {
-        #Required
-        build_pipeline_id = oci_devops_build_pipeline.custom_image_pipeline_terraform.id
-        type = "TRIGGER_BUILD_PIPELINE"
-
-        #Optional
-        filter {
-            #Required
-            trigger_source = "GITHUB"
-
-            #Optional
-            events = ["PUSH", "PULL_REQUEST_MERGED"]
-            include {
-
-                #Optional
-                base_ref = "master"
-                head_ref = "master"
-                repository_name = oci_devops_repository.oci_hpc_images_terraform.name
-            }
-        }
-    }
-    project_id = oci_devops_project.image_builder.id
-    trigger_source = "GITHUB"
-    connection_id = oci_devops_connection.github_connection_terraform.id
-
-    #Optional
-    description = "Trigger pipeline on GitHub merge to master"
-    display_name = "custom-image-pipeline-terraform-trigger"
-}
-
-
-####Creating a trigger using terraform doesn't output the secret and it appears only once when created in the UI
+####Creating a trigger using terraform doesn't provide the secret and it appears only once when created in the console
 # resource "oci_devops_trigger" "custom_image_pipeline_terraform_trigger_test" {
 #     #Required
 #     actions {
