@@ -17,10 +17,10 @@ Once you’ve applied the Terraform, you’ll copy the trigger secret into GitHu
    Enter the name of the profile you would like to create: 'oci-devops-terraform'
    ```
 
-### 3. Pure ansible source-code repository setup
+### 3. Packer source-code repository setup
    – Clone the provided sample repository and push it into your Github account as a private repository.This ensures that your   workflow, code, and pipeline configuration remain under your control and are not publicly visible.
    ```
-   git clone https://github.com/yogendradevaraju/oci-hpc-images-terraform.git
+   git clone https://github.com/yogendradevaraju/oci-hpc-images-packer-latest.git
    ```
    – After pushing to your private GitHub repository, **copy the URL of your private repo and keep it handy**; you will need to provide this URL in later steps during the pipeline setup.
 

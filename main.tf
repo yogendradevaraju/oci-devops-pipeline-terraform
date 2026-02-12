@@ -121,7 +121,7 @@ resource "oci_devops_build_pipeline_stage" "custom_build_stage" {
   build_spec_file = "/build_spec.yaml"
   description  = "First build stage in pipeline"
   display_name = "Custom Build Stage"
-  image = "OL7_X86_64_STANDARD_10"
+  image = "OL8_X86_64_STANDARD_10"
 }
 
 ####Creating a trigger using terraform doesn't provide the secret and it appears only once when created in the console
